@@ -4,6 +4,9 @@ from typing import Dict, List, Tuple, Union
 from ..utils import check_url, get_free_port
 from .base_factory import BaseFactory
 
+import os 
+import time 
+outfile = '/home/lead/hackathon_code/extension_log.txt'
 
 class URLFactory(BaseFactory):
     def __init__(self, config: Dict, **kwargs) -> None:
@@ -39,6 +42,9 @@ class URLFactory(BaseFactory):
     def start_server(
         self, args: List[str], cwd: str, source: str
     ) -> Tuple[str, Union[None, Popen]]:
+        print("Starting server")
+        logcmd = f'echo Test logging! at {time.time()} >> {outfile}'
+        os.system(logcmd)
         port = get_free_port()
         p = None
         url_list = source.split('$PORT')
@@ -49,6 +55,9 @@ class URLFactory(BaseFactory):
         base_url = f'proxy/{port}{url_suffix}'
         if len(args) > 0:
             cmd = [arg.replace('$PORT', str(port)) for arg in args]
+            print("Starting server")
+            logcmd = f'echo Running {cmd} at time {time.time()} >> {outfile}'
+            os.system(logcmd)
             p = Popen(cmd, stdout=PIPE, stderr=PIPE, cwd=cwd)
 
         if check_url(source.replace('$PORT', str(port))):
